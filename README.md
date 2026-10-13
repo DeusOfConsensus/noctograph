@@ -110,8 +110,8 @@ PostgreSQL >= 15
 
 **Installation**
 ```bash
-git clone https://github.com/DeusOfConsensus/Noctograph.git
-cd Noctograph
+git clone https://github.com/DeusOfConsensus/noctograph.git
+cd noctograph
 npm install
 cp .env.example .env
 npm run dev
