@@ -1,8 +1,6 @@
 # Noctograph
 
-**Illuminate the chain.**
-
-Noctograph is a modular, multi-chain blockchain explorer built for depth. Not just a lookup tool — a serious piece of infrastructure for reading, decoding, and analyzing on-chain activity across EVM networks.
+Noctograph is a modular, multi-chain blockchain explorer built for depth. Not just a lookup tool but a serious piece of infrastructure for reading, decoding, and analyzing on-chain activity across EVM networks.
 
 Built for developers and non-developers alike through a dual-mode interface: **Arcane View** for raw technical depth, **Common View** for plain English readability. Same data, two lenses.
 
@@ -92,9 +90,9 @@ All chains are implemented through a pluggable adapter pattern. Adding a new cha
 |---|---|
 | Frontend | Next.js, React, TypeScript, wagmi, viem, Chart.js |
 | Backend | Node.js, Express, ethers.js, viem |
-| Database | PostgreSQL via Supabase |
+| Database | PostgreSQL |
 | RPC | Alchemy, Infura |
-| Hosting | Vercel (frontend), Render (backend) |
+| Hosting | Render |
 | Dev Tools | Hardhat, Git |
 
 ---
