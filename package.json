@@ -1,0 +1,27 @@
+{
+  "name": "noctograph",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Noctograph — A deep multi-chain blockchain explorer",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "db:generate": "turbo db:generate",
+    "db:migrate": "turbo db:migrate",
+    "indexer:dev": "turbo dev --filter=@noctograph/indexer",
+    "api:dev": "turbo dev --filter=@noctograph/api",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "turbo": "^2.1.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.6.0"
+}

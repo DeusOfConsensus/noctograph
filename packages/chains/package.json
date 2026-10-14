@@ -1,0 +1,26 @@
+{
+  "name": "@noctograph/chains",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@noctograph/types": "workspace:*",
+    "viem": "^2.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

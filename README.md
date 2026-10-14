@@ -1,138 +1,93 @@
 # Noctograph
 
-Noctograph is a modular, multi-chain blockchain explorer built for depth. Not just a lookup tool but a serious piece of infrastructure for reading, decoding, and analyzing on-chain activity across EVM networks.
-
-Built for developers and non-developers alike through a dual-mode interface: **Arcane View** for raw technical depth, **Common View** for plain English readability. Same data, two lenses.
-
----
+A deep, modular, multi-chain blockchain explorer. Built for developers and non-developers alike — two lenses on the same data.
 
 ## Supported Chains
 
-- Ethereum
-- Base
-- Arbitrum
-- Polygon
-- Avalanche (C-Chain)
+| Chain | Chain ID | Type | Status |
+|---|---|---|---|
+| Ethereum | 1 | L1 | ✓ |
+| Base | 8453 | L2 (OP Stack) | ✓ |
+| Arbitrum One | 42161 | L2 (Arbitrum) | ✓ |
+| Polygon PoS | 137 | Sidechain | ✓ |
+| Avalanche C-Chain | 43114 | L1 | ✓ |
 
-All chains are implemented through a pluggable adapter pattern. Adding a new chain is a single module, not a rewrite.
+### Chain Adapter Pattern
 
----
-
-## Features
-
-**Transaction Intelligence**
-- Plain English transaction decoder powered by ABI registry + AI interpretation
-- Internal call trace visualizer — interactive call tree with ETH flow and revert mapping
-- MEV detection — flags sandwich attacks, frontrunning, and arbitrage automatically
-- Simulation mode — simulate any transaction against current chain state before broadcasting
-
-**Wallet Intelligence**
-- Behavioral profiling — classifies wallets by activity pattern (trader, LP, DAO voter, etc.)
-- Historical PnL tracking across all tokens for any wallet address
-- Wallet relationship graph — visualizes interaction patterns between addresses
-- Risk scoring — surfaces interactions with known exploits, mixers, and sanctioned addresses
-
-**Contract Intelligence**
-- Live ABI interaction panel — call any contract function directly from the explorer
-- Storage slot inspector — read raw contract storage state
-- Upgrade history tracker — full implementation changelog for UUPS and Transparent proxies
-- Vulnerability surface hints — first-pass flags for common Solidity risk patterns
-
-**Analytics**
-- Gas oracle with historical heatmaps and optimal timing recommendations
-- Network health dashboard — TPS, block utilization, mempool depth, sequencer behavior
-- Cross-chain capital flow tracker — real-time visualization of asset movement between chains
-- Token flow analysis — accumulation vs. distribution patterns, whale wallet alerts
-- Protocol metrics — auto-aggregated TVL approximation, unique users, and volume trends
-
----
-
-## Architecture
+Every chain is accessed through `IChainAdapter`. Adding a new chain = writing a new adapter. The indexer never touches chain SDKs directly.
 
 ```
-┌──────────────────────────────────────────────┐
-│             NOCTOGRAPH FRONTEND              │
-│          Next.js · React · TypeScript        │
-│   ┌─────────────────┐  ┌──────────────────┐  │
-│   │   Arcane View   │  │   Common View    │  │
-│   └─────────────────┘  └──────────────────┘  │
-└──────────────────┬───────────────────────────┘
-                   │ REST + WebSocket
-┌──────────────────▼───────────────────────────┐
-│             NOCTOGRAPH BACKEND               │
-│              Node.js · Express               │
-│  ┌──────────────────────────────────────┐    │
-│  │          Chain Adapter Layer         │    │
-│  │   ETH · Base · ARB · POLY · AVAX    │    │
-│  └──────────────────────────────────────┘    │
-│  ┌─────────────────┐  ┌─────────────────┐    │
-│  │     Indexer     │  │ Analytics Engine│    │
-│  └─────────────────┘  └─────────────────┘    │
-└──────────────────┬───────────────────────────┘
-                   │
-┌──────────────────▼───────────────────────────┐
-│                 PostgreSQL                   │
-│  blocks · transactions · token_transfers     │
-│  wallets · contracts · events · analytics    │
-└──────────────────┬───────────────────────────┘
-                   │
-┌──────────────────▼───────────────────────────┐
-│            RPC Infrastructure                │
-│       Alchemy (primary) · Infura (fallback)  │
-└──────────────────────────────────────────────┘
+Blockchain → RPC → IChainAdapter → Indexer → PostgreSQL → API → Frontend
 ```
 
----
+## Quick Start
+
+### Prerequisites
+- Node.js >= 20
+- pnpm >= 9
+- PostgreSQL Database
+- An [Alchemy](https://alchemy.com) API key
+
+### Setup
+
+```bash
+# Install dependencies
+pnpm install
+
+# Copy env file and fill in your values
+cp .env.example .env
+
+# Generate DB migrations
+pnpm db:generate
+
+# Run migrations against your Supabase DB
+pnpm db:migrate
+```
+
+### Development
+
+```bash
+# Start the indexer (defaults to Base chain)
+pnpm indexer:dev
+
+# Start the API in another terminal
+pnpm api:dev
+```
+
+The API will be available at `http://localhost:3001`.
+
+## API Reference
+
+```
+GET /health
+GET /api/v1/chains
+GET /api/v1/chains/:chainSlug
+GET /api/v1/:chainSlug/blocks?limit=20
+GET /api/v1/:chainSlug/blocks/:numberOrHash
+GET /api/v1/:chainSlug/transactions?limit=20
+GET /api/v1/:chainSlug/transactions/:hash
+GET /api/v1/:chainSlug/transactions/block/:number
+```
+
+## Environment Variables
+
+See `.env.example` for full documentation of all variables.
 
 ## Tech Stack
 
-| Layer | Tools |
-|---|---|
-| Frontend | Next.js, React, TypeScript, wagmi, viem, Chart.js |
-| Backend | Node.js, Express, ethers.js, viem |
-| Database | PostgreSQL |
-| RPC | Alchemy, Infura |
-| Hosting | Render |
-| Dev Tools | Hardhat, Git |
-
----
-
-## Getting Started
-
-> Noctograph is under active development. Setup instructions are updated as the project progresses.
-
-**Prerequisites**
-```
-node >= 18.0.0
-npm >= 9.0.0
-PostgreSQL >= 15
-```
-
-**Installation**
-```bash
-git clone https://github.com/DeusOfConsensus/noctograph.git
-cd noctograph
-npm install
-cp .env.example .env
-npm run dev
-```
-
-**Environment Variables**
-```env
-ALCHEMY_API_KEY=
-INFURA_API_KEY=
-DATABASE_URL=
-DATABASE_ANON_KEY=
-
-ENABLE_ETHEREUM=true
-ENABLE_BASE=true
-ENABLE_ARBITRUM=false
-ENABLE_POLYGON=false
-ENABLE_AVALANCHE=false
-```
-
----
+| Layer | Technology | Why |
+|---|---|---|
+| Language | TypeScript (strict) | Type safety across the whole system |
+| Monorepo | Turborepo + pnpm workspaces | Fast builds, shared packages |
+| Blockchain | viem | Type-safe, tree-shakeable EVM client |
+| Database ORM | Drizzle | Type-safe SQL, no magic, fast inserts |
+| Database | PostgreSQL | Relational, indexed |
+| API | Hono | Lightweight, edge-compatible, fast |
 
 ## License
 
-MIT
+MIT — build freely.
+
+---
+
+*Built with Passion by [Kenechukwu](https://github.com/DeusOfConsensus)*
