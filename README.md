@@ -1,6 +1,6 @@
 # Noctograph
 
-A deep, modular, multi-chain blockchain explorer. Built for developers and non-developers alike — two lenses on the same data.
+A deep, modular, multi-chain blockchain explorer. Built for developers and non-developers alike; two lenses on the same data.
 
 ## Supported Chains
 
